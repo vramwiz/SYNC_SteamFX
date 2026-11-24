@@ -154,7 +154,7 @@ begin
     if not TableInitialized then
     begin
       SetupPluginTable(FILTER_FLAG_VIDEO or FILTER_FLAG_INPUT or FILTER_FLAG_USERDATA,
-        '湯気演出', 'SYNC', '湯気演出 / SYNC_SteamFX v0.1.0', SteamProcVideo, nil);
+        '湯気演出', 'SYNC', '湯気演出 / SYNC_SteamFX v1.0.0', SteamProcVideo, nil);
       RegisterSteamParameters;
       GetPluginTable^.Func_Create := SteamCreate;
       GetPluginTable^.Func_Destroy := SteamDestroy;

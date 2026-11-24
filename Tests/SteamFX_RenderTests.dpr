@@ -517,6 +517,7 @@ begin
     Table := GetTable();
     Check((Table <> nil) and (string(Table^.Name) = '湯気演出') and
       (string(Table^.Label_) = 'SYNC'), 'Wrong plugin registration');
+    Check(string(Table^.Information) = '湯気演出 / SYNC_SteamFX v1.0.0', 'Wrong release version');
     Check(Table^.Flag = (FILTER_FLAG_VIDEO or FILTER_FLAG_INPUT or FILTER_FLAG_USERDATA),
       'SteamFX must be a standalone media object');
     Item := PPointer(Table^.Items);
