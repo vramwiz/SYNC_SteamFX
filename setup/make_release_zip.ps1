@@ -63,9 +63,12 @@ try {
         throw 'The catalog must download and extract the ZIP, then copy the plugin directory.'
     }
     $uninstall = @($entry.installer.uninstall)
-    if ($uninstall.Count -ne 1 -or $uninstall[0].action -cne 'delete' -or
-        $uninstall[0].path -cne $pluginDirectory) {
-        throw 'The catalog must delete only the installed plugin directory in a single step.'
+    $packagedFiles = @("$packageName.auf2", 'README.md', 'LICENSE', 'THIRD_PARTY_NOTICES.md', 'ThirdParty/LICENSE.AviUtl2-SDK.txt')
+    $expectedPaths = @($packagedFiles | ForEach-Object { "{pluginsDir}/$packageName/$_" })
+    $deletePaths = @($uninstall | Where-Object action -ceq 'delete' | ForEach-Object path)
+    if ($uninstall.Count -ne $expectedPaths.Count -or $deletePaths.Count -ne $expectedPaths.Count -or
+        @(Compare-Object $expectedPaths $deletePaths -CaseSensitive).Count -ne 0) {
+        throw 'The catalog uninstall paths must list every installed file exactly once.'
     }
     if (@($entry.version).Count -eq 0) { throw 'The catalog must contain a release version.' }
     if ($entry.version[0].version -cne 'v1.0.0') {

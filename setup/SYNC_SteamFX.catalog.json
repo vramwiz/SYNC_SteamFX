@@ -54,11 +54,27 @@
                                           }
                                       ],
                           "uninstall":  [
-                                            {
-                                                "action":  "delete",
-                                                "path":  "{pluginsDir}/SYNC_SteamFX"
-                                            }
-                                        ]
+                              {
+                                  "action":  "delete",
+                                  "path":  "{pluginsDir}/SYNC_SteamFX/SYNC_SteamFX.auf2"
+                              },
+                              {
+                                  "action":  "delete",
+                                  "path":  "{pluginsDir}/SYNC_SteamFX/README.md"
+                              },
+                              {
+                                  "action":  "delete",
+                                  "path":  "{pluginsDir}/SYNC_SteamFX/LICENSE"
+                              },
+                              {
+                                  "action":  "delete",
+                                  "path":  "{pluginsDir}/SYNC_SteamFX/THIRD_PARTY_NOTICES.md"
+                              },
+                              {
+                                  "action":  "delete",
+                                  "path":  "{pluginsDir}/SYNC_SteamFX/ThirdParty/LICENSE.AviUtl2-SDK.txt"
+                              }
+                          ]
                       },
         "version":  [
                         {
