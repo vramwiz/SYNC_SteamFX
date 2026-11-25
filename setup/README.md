@@ -30,4 +30,4 @@ SYNC_SteamFX/
     LICENSE.AviUtl2-SDK.txt
 ```
 
-カタログでのインストールは、ZIP をダウンロードして展開した後に `SYNC_SteamFX` フォルダーを一括コピーします。アンインストールでは ZIP からインストールしたファイルのみを個別に削除します。
+カタログでのインストールは、ZIP をダウンロードして展開した後に `SYNC_SteamFX` フォルダーを一括コピーします。アンインストールは `{pluginsDir}/SYNC_SteamFX` を1工程で削除します。
