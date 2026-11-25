@@ -23,7 +23,8 @@ type
     trReleaseTime, trInterval, trReleaseTimeVar, trIntervalVar, trReleaseAmountVar, trPhase,
     trWindDirection, trWindSpeed, trWindVariation, trWindChange,
     trConcentration, trContrast, trBlur, trSoftness,
-    trLife, trLifeVariation, trFadeIn, trFadeOut, trDiffusionFade);
+    trLife, trLifeVariation, trFadeIn, trFadeOut, trDiffusionFade,
+    trOriginX, trOriginY);
 
   TSteamSettings = record
     Style: TSteamStyle;
@@ -47,7 +48,7 @@ const
   STEAM_CIRCLE_NAMES: array[TSteamCircle] of PWideChar = ('円の内部全体', '円周');
   STEAM_RELEASE_NAMES: array[TSteamRelease] of PWideChar =
     ('連続', '周期的', 'ランダム', '瞬間放出');
-  // 形状は px、移動速度は px/秒、時間は秒。割合は 100 が基準。
+  // 発生位置と形状は px、移動速度は px/秒、時間は秒。割合は 100 が基準。
   STEAM_TRACKS: array[TSteamTrack] of TSteamTrackSpec = (
     (Name:'発生量'; Initial:100; Min:0; Max:150; Step:0.01),
     (Name:'発生源の数'; Initial:7; Min:1; Max:32; Step:1),
@@ -101,7 +102,9 @@ const
     (Name:'寿命のばらつき'; Initial:28; Min:0; Max:100; Step:0.1),
     (Name:'出現時のフェード'; Initial:0.16; Min:0; Max:6; Step:0.01),
     (Name:'消失時のフェード'; Initial:1.25; Min:0; Max:12; Step:0.01),
-    (Name:'拡散に伴う透明度の変化'; Initial:60; Min:0; Max:100; Step:0.1));
+    (Name:'拡散に伴う透明度の変化'; Initial:60; Min:0; Max:100; Step:0.1),
+    (Name:'発生位置X'; Initial:0; Min:-8192; Max:8192; Step:1),
+    (Name:'発生位置Y'; Initial:0; Min:-8192; Max:8192; Step:1));
 
 function ClampSteamTrack(Track: TSteamTrack; Value: Double): Double;
 function DefaultSteamSettings: TSteamSettings;

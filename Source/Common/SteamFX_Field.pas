@@ -139,8 +139,9 @@ begin
     Scene.WindY := -Scene.WindY;
     Scene.WindChange := V^[trWindChange] * 0.016;
   end;
-  Scene.OriginX := Width * 0.5;
-  Scene.OriginY := Height * 0.5;
+  // 画面内の XY オフセットを投影後の位置に加え、遠近感による拡大縮小から外す。
+  Scene.OriginX := Width * 0.5 + V^[trOriginX];
+  Scene.OriginY := Height * 0.5 + V^[trOriginY];
   Scene.Lens := Max(640.0, Height * 1.15);
   Scene.BaseStrength := V^[trDensity] * V^[trConcentration] * 0.000073;
   Scene.LifeVariation := V^[trLifeVariation] * 0.006;

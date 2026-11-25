@@ -8,6 +8,7 @@ interface
 
 uses SteamFX_Settings;
 
+// 初期値と表示順を使って DLL 所有の設定項目をフィルターテーブルへ登録する。
 procedure RegisterSteamParameters;
 // ホストが描画コールバックに設定した値をコピーする。現在の編集中の値は変更しない。
 function ReadSteamSettings: TSteamSettings;
@@ -86,9 +87,11 @@ begin
     Plan(CIRCLE_NAME, UTF8String(STEAM_CIRCLE_NAMES[S.Circle]));
     Plan(RELEASE_NAME, UTF8String(STEAM_RELEASE_NAMES[S.Release]));
     Plan(COLOR_NAME, UTF8String(IntToHex(S.Color, 6)));
+    // プリセットを切り替えても、素材に合わせた発生位置を保持する。
     for Track := Low(TSteamTrack) to High(TSteamTrack) do
-      Plan(STEAM_TRACKS[Track].Name,
-        UTF8String(FloatToStr(S.Value[Track], TFormatSettings.Invariant)));
+      if not (Track in [trOriginX, trOriginY]) then
+        Plan(STEAM_TRACKS[Track].Name,
+          UTF8String(FloatToStr(S.Value[Track], TFormatSettings.Invariant)));
     while Applied < Count do
     begin
       if not Edit^.SetObjectItemValue(Obj, PWideChar(Target), Changes[Applied].Name,
@@ -177,6 +180,7 @@ begin
   EndGroup(sgStyle);
   TrackGroup(sgAmount, trAmount, trAmount, True);
   BeginGroup(sgSource);
+  AddTracks(trOriginX, trOriginY);
   AddSelect(SourceSelect, SOURCE_NAME, Ord(S.Source), @SourceOptions[0]);
   AddSelect(CircleSelect, CIRCLE_NAME, Ord(S.Circle), @CircleOptions[0]);
   AddTracks(trSources, trSourceVariation);

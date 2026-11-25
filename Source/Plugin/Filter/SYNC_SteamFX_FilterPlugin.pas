@@ -101,7 +101,7 @@ begin
     History.CurrentValue := S.Value[trAmount];
     Sampler := ReadTimelineAmount;
   end;
-  // 中央を原点に画像を生成し、配置と全体透明度はホストの標準描画に任せる。
+  // 画像内の発生位置は SteamFX で設定し、画像全体の配置と透明度は標準描画に任せる。
   BuildSteamFrame(S, Width, Height, Video^.Object_^.Time, Sampler, @History, Frame);
   if not TryRenderSteamGPU(Video, Width, Height, Frame) then
   begin

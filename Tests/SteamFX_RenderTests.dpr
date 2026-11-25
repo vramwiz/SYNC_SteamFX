@@ -31,6 +31,8 @@ const
   PRESET_COUNT = 32;
   SELECT_PRESET = '湯気プリセット';
   ITEM_AMOUNT = '発生量';
+  ITEM_ORIGIN_X = '発生位置X';
+  ITEM_ORIGIN_Y = '発生位置Y';
   ITEM_COLOR = '湯気の色';
   TARGET_EFFECT = '湯気演出:0';
   VERTEX_SHADER: AnsiString =
@@ -377,9 +379,15 @@ begin
   ImageParam.Alpha := 0.95;
   ExpectedParam := ImageParam;
   Check(Same(A, Render(0)), 'Host image parameters were applied inside the texture');
+  Track(ITEM_ORIGIN_X)^.Value := -61;
+  Track(ITEM_ORIGIN_Y)^.Value := 47;
   Writes := EditWrites;
   Apply(9);
   Check(EditWrites - Writes = 58, 'Wrong number of preset values applied');
+  Check((Track(ITEM_ORIGIN_X)^.Value = -61) and (Track(ITEM_ORIGIN_Y)^.Value = 47),
+    'Preset changed the source position');
+  Track(ITEM_ORIGIN_X)^.Value := 0;
+  Track(ITEM_ORIGIN_Y)^.Value := 0;
   B := Render(0.4);
   Check(CompareMem(@ImageParam, @ExpectedParam, SizeOf(ImageParam)),
     'Preset or render changed the host image parameters');
@@ -414,6 +422,33 @@ begin
   end;
   Check(Option^.Name = nil, 'Preset list is missing its sentinel');
   Writeln('PASS 32 distinct presets, defaults, selection, host placement, edit rollback');
+end;
+
+procedure TestSourcePosition;
+var
+  X, Y: PFILTER_ITEM_TRACK;
+  Centered, Shifted: TBounds;
+begin
+  X := Track(ITEM_ORIGIN_X);
+  Y := Track(ITEM_ORIGIN_Y);
+  Check((X^.S = -8192) and (X^.E = 8192) and (X^.Step = 1) and
+    (Y^.S = -8192) and (Y^.E = 8192) and (Y^.Step = 1), 'Wrong source coordinate range or unit');
+  Check((X^.Value = 0) and (Y^.Value = 0), 'Wrong initial source position');
+  Centered := BoundsOf(Render(0));
+  Check(Centered.Peak >= 10, 'No visible steam at the center');
+  X^.Value := -61;
+  Y^.Value := 47;
+  Shifted := BoundsOf(Render(0));
+  Check((Abs(Shifted.Left - (Centered.Left - 61)) <= 1) and
+    (Abs(Shifted.Right - (Centered.Right - 61)) <= 1) and
+    (Abs(Shifted.Top - (Centered.Top + 47)) <= 1) and
+    (Abs(Shifted.Bottom - (Centered.Bottom + 47)) <= 1),
+    'Steam did not move by the specified offset');
+  X^.Value := X^.E;
+  Check(BoundsOf(Render(0)).Alpha = 0, 'Off-screen steam was not clipped');
+  X^.Value := 0;
+  Y^.Value := 0;
+  Writeln('PASS relative source X/Y, default, and off-screen clipping');
 end;
 
 procedure TestTimeline;
@@ -463,6 +498,8 @@ var
   I, OldWrites: Integer;
 begin
   Apply(0);
+  Track(ITEM_ORIGIN_X)^.Value := 72;
+  Track(ITEM_ORIGIN_Y)^.Value := -28;
   CPU := Render(1.32);
   CPUStats := BoundsOf(CPU);
   InitializeD3D;
@@ -482,6 +519,8 @@ begin
   ForceGPUFailure := True;
   Check(Same(CPU, Render(1.32)), 'Shader failure did not reproduce the CPU path');
   ForceGPUFailure := False;
+  Track(ITEM_ORIGIN_X)^.Value := 0;
+  Track(ITEM_ORIGIN_Y)^.Value := 0;
   Track(ITEM_AMOUNT)^.Value := 0;
   Check(BoundsOf(Render(1.32)).Alpha = 0, 'GPU did not clear an empty frame');
   Scene.Width := 1920;
@@ -531,7 +570,7 @@ begin
         'Duplicate base object setting: ' + ItemName);
       Inc(Item);
     end;
-    Check(ItemCount = 94, 'Unexpected number of registered settings');
+    Check(ItemCount = 96, 'Unexpected number of registered settings');
     Check((NativeUInt(@Obj.EffectHandle) - NativeUInt(@Obj) = 112) and
       (NativeUInt(@@Edit.GetEffectTrackValue) - NativeUInt(@Edit) = 472) and
       (NativeUInt(@@Video.ExecPixelshaderData) - NativeUInt(@Video) = 224) and
@@ -558,6 +597,7 @@ begin
     Video.UserData := Table^.Func_Create(1);
     Check(Video.UserData <> nil, 'Session creation failed');
     try
+      TestSourcePosition;
       TestPresets;
       TestTimeline;
       TestGPU;

@@ -63,11 +63,11 @@
         "version":  [
                         {
                             "version":  "v1.0.0",
-                            "release_date":  "2026-11-24",
+                            "release_date":  "2026-11-25",
                             "file":  [
                                          {
                                              "path":  "{pluginsDir}/SYNC_SteamFX/SYNC_SteamFX.auf2",
-                                             "XXH3_128":  "b007abf0415e357160d2f1922c76105f"
+                                             "XXH3_128":  "e6d5a337b60e659051e164481e678916"
                                          }
                                      ]
                         }
